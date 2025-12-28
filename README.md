@@ -27,9 +27,10 @@ that one can write, e.g.
 end
 ```
 
-`autopkg` creates and activates a temporary project environment, adds all
-packages referred to in the code block (whether conditional or not) and then
-executes the code block.
+`autopkg` creates and activates a temporary project environment (except in
+Google Colab notebooks, which run isolated anyway), adds all packages referred
+to in the code block (whether conditional or not) and then executes the code
+block.
 
 
 ## Documentation

@@ -6,13 +6,22 @@ const _autopkg_lock = ReentrantLock()
 const _autopkg_added = Set{String}()
 
 
+function _running_in_colab()
+    return haskey(ENV, "COLAB_RELEASE_TAG") || haskey(ENV, "COLAB_GPU")
+end
+
+
 function _activate_autopkg()
     @lock _autopkg_lock begin
         if !_autopkg_activated[]
             get!(ENV, "JULIA_PKG_PRESERVE_TIERED_INSTALLED", "true")
 
             if isempty(_autopkg_project[])
-                Pkg.activate(; temp = true)
+                # Google Colab notebooks run isolated anyway, so don't create
+                # a temporary Julia environment by default:
+                if !_running_in_colab()
+                    Pkg.activate(; temp = true)
+                end
             else
                 Pkg.activate(_autopkg_project[])
                 Pkg.instantiate()
@@ -45,8 +54,9 @@ end
 Looks for `using` and `import` statements in `expr`, and adds the required
 packages to a temporary Julia project environment before evaluating `expr`.
 
-Always activates a temporary project environment on first use, no matter
-if `expr` contains any `using` or `import` statements or not.
+Automatically activates a temporary project environment on first use (no
+matter if `expr` contains any `using` or `import` statements or not), except
+when running in Gooogle Colab notebooks (which are isolated anyway).
 
 `@autopkg` sets the environment variable
 `\$JULIA_PKG_PRESERVE_TIERED_INSTALLED` to `"true"`, to re-use packages
