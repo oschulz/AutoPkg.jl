@@ -31,13 +31,39 @@ end
 packages referred to in the code block (whether conditional or not) and then
 executes the code block.
 
-Do *not* use `@autopkg` with Julia [Pluto](https://plutojl.org/) notebooks, as
-Pluto uses a built-in package management.
 
 ## Documentation
 
 * [Documentation for stable version](https://oschulz.github.io/AutoPkg.jl/stable)
 * [Documentation for development version](https://oschulz.github.io/AutoPkg.jl/dev)
+
+
+## Auto-loading AutoPkg.jl
+
+`@autopkg` is also very handy for casual use on the REPL, e.g. to quickly try
+out some Julia packages, but having to write `using AutoPkg` first is
+annoying.
+
+To auto-load AutoPkg via
+[BasicAutoloads](https://github.com/LilithHafner/BasicAutoloads.jl),
+add `BasicAutoloads` to your default Julia environment and add
+
+```julia
+if isinteractive()
+	try
+		import BasicAutoloads
+		BasicAutoloads.register_autoloads([
+			["@autopkg"] => :(using AutoPkg),
+		])
+	catch e
+		@warn "Error while setting up BasicAutoloads" exception=(e, catch_backtrace())
+	end
+end
+```
+
+to your `~/.julia/config/startup.jl` file.
+
+Now `@autopkg` will automatically be available in interactive Julia sessions.
 
 
 ## Similar packages
