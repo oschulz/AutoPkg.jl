@@ -17,7 +17,7 @@ AutoPkg provides a macro `@autopg` that automatizes Julia `Pkg` operations, so t
 end
 ```
 
-`autopkg` creates and activates a temporary project environment (except inGoogle Colab notebooks, which run isolated anyway). adds all packages referred to in the code block (whether conditional or not) and then executes the code block.
+`autopkg` creates and activates a temporary project environment (except in Google Colab notebooks, which run isolated anyway). adds all packages referred to in the code block (whether conditional or not) and then executes the code block.
 
 `@autopkg` also sets the environment variable `$JULIA_PKG_PRESERVE_TIERED_INSTALLED` to `"true"`, to re-use packages already present in the Julia package depot if possible.
 
